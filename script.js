@@ -3,7 +3,7 @@ const scene = new THREE.Scene();
 
 // create the camera, which will be our perspective where
 // we see the earth from
-const camera = new THREE.Scene(
+const camera = new THREE.PerspectiveCamera(
     45,
     window.innerWidth / window.innerHeight,
     0.001,
@@ -43,7 +43,7 @@ const earthMesh = new THREE.MeshPhongMaterial({
 const earthGeometry = new THREE.SphereGeometry(2, 32, 32);
 
 // this creates now our Earth which will be a sphere covered with the 
-// images from the images folder, I showed in the beginning
+// images from the images folder.
 const earth = new THREE.Mesh(earthGeometry, earthMesh);
 
 // now we add it to the scene
@@ -70,70 +70,9 @@ function show() {
 
 show();
 
-// now I will disable the preview 
-// and we will add the functionality for dragging and zooming
-// into our earth
+// ==============================  Finish earth ====================
 
-let isDragging = false;
-let previousMousePosition = {
-    x: 0,
-    y: 0
-};
 
-// this listens to when we press the mouse down, so we adjust the position
-document.addEventListener("mousedown", (event) => {
-    isDragging = true;
-    previousMousePosition = {
-        x: event.clientX,
-        y: event.clientY
-    };
-});
-
-// now we add the listener for when we move the mouse
-document.addEventListener("mousemove", (event) => {
-    if(!isDragging) {
-        return;
-    }
-
-    const deltaMove = {
-        x: event.clientX - previousMousePosition.x,
-        y: event.clientY - previousMousePosition.y
-    };
-
-    const deltaRotation = new THREE.Quaternion().setFromEuler(
-        new THREE.Euler(
-            toRadians(deltaMove.y),
-            toRadians(deltaMove.x),
-            0,
-            'XYZ'
-        )
-    );
-
-    earth.quaternion.multiplyQuaternions(
-        deltaRotation,
-        earth.quaternion
-    );
-    previousMousePosition = {
-        x: event.clientX,
-        y: event.clientY
-    };
-});
-
-// this is the listener for when we stop dragging
-document.addEventListener("mouseup", (event) => {
-    isDragging = false;
-});
-
-// this is the eventlistener to be able to zoom in and out
-document.addEventListener("wheel", (event) => {
-    camera.position.z += event.deltaY * 0.01;
-});
-
-// we need a helper function to convert degrees to radians, so we can
-// calculate properly the new position of the globe
-function toRadians(degrees) {
-    return degrees * (Math.PI / 180);
-}
 
 
 
